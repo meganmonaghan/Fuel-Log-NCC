@@ -44,7 +44,7 @@ if delivery_input.lower() == 'y':
 	delivery_gallons = float(d_components[1])
 	price_per_gallon = float(d_components[0])/float(d_components[1])
 	pricepg_queue.append(price_per_gallon)
-	full_price_queue.append(d_components[0])
+	full_price_queue.append(float(d_components[0]))
 	gas_queue.append(delivery_gallons)
 
 # gallons start/end
@@ -64,7 +64,6 @@ gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 price_used = 0
 gas_used_dict = {}
 
-# calculating gallons used/price used etc.
 while gallons_used:
 	gq = gas_queue.popleft()
 	if gallons_used >= gq:
@@ -77,9 +76,13 @@ while gallons_used:
 	else:
 		pq = pricepg_queue.popleft()
 		price_used += gallons_used * pq
-		gas_used_dict[pq] = gallons_used
+		if pq in gas_used_dict.keys():
+			gas_used_dict[pq] = gas_used_dict[pq] + gallons_used
+		else:
+			gas_used_dict[pq] = gallons_used
 		pricepg_queue.appendleft(pq)
 		gas_queue.appendleft(gq - gallons_used)
+		break
 
 # reiterating gallons_used value for return
 gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
@@ -95,6 +98,7 @@ print(f'''
 	***
 	''')
 
+# display queue for next month
 print(f'''
 	current price queue: {full_price_queue}
 	current gallon queue: {gas_queue}

@@ -3,7 +3,8 @@ import collections
 # test list of deliveries
 # 200.00 10, 400.00 200, 150.00 32, 500.00 45
 
-price_queue = collections.deque()
+pricepg_queue = collections.deque()
+full_price_queue = collections.deque()
 gas_queue = collections.deque()
 
 user_input = input('''
@@ -23,20 +24,22 @@ def test_queue(user_input):
 	for delivery in deliveries:
 		price_gal_split = delivery.split(' ')
 		price_per_gallon = float(price_gal_split[0])/float(price_gal_split[1])
-		price_queue.append(price_per_gallon)
+		pricepg_queue.append(price_per_gallon)
+		full_price_queue.append(float(price_gal_split[0]))
 		gas_queue.append(float(price_gal_split[1]))
 	return delivery_count
+
+test_queue(user_input)
 
 def display_queue(price_q, gal_q, num):
 	for x in range(num):
 		print(f'''
 		Delivery {x+1}:
-		Price per gallon: {price_q.popleft()}
+		Price per gallon: {pricepg_q.popleft()}
 		Gallons: {gal_q.popleft()}
 	***''')
 	return 'All deliveries have been displayed!'
 
-delivery_count = test_queue(user_input)
 # print(display_queue(price_queue, gas_queue, delivery_count))
 
 delivery_input = input('''
@@ -55,7 +58,8 @@ if delivery_input.lower() == 'y':
 	d_components = delivery_input.split(' ')
 	delivery_gallons = float(d_components[1])
 	price_per_gallon = float(d_components[0])/float(d_components[1])
-	price_queue.append(price_per_gallon)
+	pricepg_queue.append(price_per_gallon)
+	full_price_queue.append(float(d_components[0]))
 	gas_queue.append(delivery_gallons)
 
 gallons_start = float(input('''
@@ -70,6 +74,11 @@ gallons_end = float(input('''
 	END of this month. Enter with no commas or spaces.
 '''))
 
+# print(f'''
+# 	full price queue: {full_price_queue}
+# 	price per gallon queue: {pricepg_queue}
+# 	gallons queue: {gas_queue}''')
+
 gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 price_used = 0
 gas_used_dict = {}
@@ -77,16 +86,22 @@ gas_used_dict = {}
 while gallons_used:
 	gq = gas_queue.popleft()
 	if gallons_used >= gq:
-		pq = price_queue.popleft()
+		pq = pricepg_queue.popleft()
+		full_price_queue.popleft()
 		price_used += gq * pq
 		gallons_used -= gq
 		gas_used_dict[pq] = gq
+	# this needs to be fixed, this else block
 	else:
-		pq = price_queue.popleft()
+		pq = pricepg_queue.popleft()
 		price_used += gallons_used * pq
-		gas_used_dict[pq] = gallons_used
-		price_queue.appendleft(pq)
+		if pq in gas_used_dict.keys():
+			gas_used_dict[pq] = gas_used_dict[pq] + gallons_used
+		else:
+			gas_used_dict[pq] = gallons_used
+		pricepg_queue.appendleft(pq)
 		gas_queue.appendleft(gq - gallons_used)
+		break
 
 gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 
