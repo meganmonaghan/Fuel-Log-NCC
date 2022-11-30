@@ -4,15 +4,14 @@ import collections
 # 200.00 10, 400.00 200, 150.00 32, 500.00 45
 
 pricepg_queue = collections.deque()
-full_price_queue = collections.deque()
 gas_queue = collections.deque()
 
 user_input = input('''
-	Please enter current deliveries and amounts in the
-	following format:
+	Please enter current inventory by price per gallon
+	and amounts in the following format:
 	5.00 100
 	where each pair is separated by a comma and space.
-	Do NOT enter dollar signs or commas.
+	Do NOT enter dollar signs or commas in your numbers.
 ''')
 
 # not deliveries but queue
@@ -23,9 +22,7 @@ def test_queue(user_input):
 	delivery_count = len(deliveries)
 	for delivery in deliveries:
 		price_gal_split = delivery.split(' ')
-		price_per_gallon = float(price_gal_split[0])/float(price_gal_split[1])
-		pricepg_queue.append(price_per_gallon)
-		full_price_queue.append(float(price_gal_split[0]))
+		pricepg_queue.append(float(price_gal_split[0]))
 		gas_queue.append(float(price_gal_split[1]))
 	return delivery_count
 
@@ -59,7 +56,6 @@ if delivery_input.lower() == 'y':
 	delivery_gallons = float(d_components[1])
 	price_per_gallon = float(d_components[0])/float(d_components[1])
 	pricepg_queue.append(price_per_gallon)
-	full_price_queue.append(float(d_components[0]))
 	gas_queue.append(delivery_gallons)
 
 gallons_start = float(input('''
@@ -87,7 +83,6 @@ while gallons_used:
 	gq = gas_queue.popleft()
 	if gallons_used >= gq:
 		pq = pricepg_queue.popleft()
-		full_price_queue.popleft()
 		price_used += gq * pq
 		gallons_used -= gq
 		gas_used_dict[pq] = gq
@@ -114,7 +109,7 @@ print(f'''
 	gas use by price per gallons: {gas_used_dict}
 	''')
 
-# 2000.00 500, 2250.00 500
+# 4.00 500, 4.5 500
 # delivery - 1750.00 500
 # gallons start - 1250
 # gallons end - 750
