@@ -72,3 +72,4 @@ print(display_queue(price_queue, gas_queue, delivery_count))
 # 8. if delivery:
 # 	return delivery
 # 9. return gal_beginning, gal_end
+# 10. return gallons_used total
