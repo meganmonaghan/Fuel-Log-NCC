@@ -1,9 +1,7 @@
 import collections
 
-# test list of deliveries
-# 200.00 10, 400.00 200, 150.00 32, 500.00 45
-
-price_queue = collections.deque()
+pricepg_queue = collections.deque()
+full_price_queue = collections.deque()
 gas_queue = collections.deque()
 
 user_input = input('''
@@ -14,31 +12,21 @@ user_input = input('''
 	Do NOT enter dollar signs or commas.
 ''')
 
-# not deliveries but queue
-# need to return remaining queue at the end of the month to save
-
+# add current queue
 def test_queue(user_input):
 	deliveries = user_input.split(', ')
 	delivery_count = len(deliveries)
 	for delivery in deliveries:
 		price_gal_split = delivery.split(' ')
 		price_per_gallon = float(price_gal_split[0])/float(price_gal_split[1])
-		price_queue.append(price_per_gallon)
+		pricepg_queue.append(price_per_gallon)
+		full_price_queue.append(float(price_gal_split[0]))
 		gas_queue.append(float(price_gal_split[1]))
 	return delivery_count
 
-def display_queue(price_q, gal_q, num):
-	for x in range(num):
-		print(f'''
-		Delivery {x+1}:
-		Price per gallon: {price_q.popleft()}
-		Gallons: {gal_q.popleft()}
-	***''')
-	return 'All deliveries have been displayed!'
+test_queue(user_input)
 
-delivery_count = test_queue(user_input)
-# print(display_queue(price_queue, gas_queue, delivery_count))
-
+# add delivery, if applicable
 delivery_input = input('''
 	Did you receive any deliveries this month?
 	Enter Y/N
@@ -55,9 +43,11 @@ if delivery_input.lower() == 'y':
 	d_components = delivery_input.split(' ')
 	delivery_gallons = float(d_components[1])
 	price_per_gallon = float(d_components[0])/float(d_components[1])
-	price_queue.append(price_per_gallon)
+	pricepg_queue.append(price_per_gallon)
+	full_price_queue.append(d_components[0])
 	gas_queue.append(delivery_gallons)
 
+# gallons start/end
 gallons_start = float(input('''
 ***
 	Please enter the number of gallons you STARTED
@@ -74,22 +64,27 @@ gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 price_used = 0
 gas_used_dict = {}
 
+# calculating gallons used/price used etc.
 while gallons_used:
 	gq = gas_queue.popleft()
 	if gallons_used >= gq:
-		pq = price_queue.popleft()
+		pq = pricepg_queue.popleft()
+		full_price_queue.popleft()
 		price_used += gq * pq
 		gallons_used -= gq
 		gas_used_dict[pq] = gq
+	# this needs to be fixed, this else block
 	else:
-		pq = price_queue.popleft()
+		pq = pricepg_queue.popleft()
 		price_used += gallons_used * pq
 		gas_used_dict[pq] = gallons_used
-		price_queue.appendleft(pq)
+		pricepg_queue.appendleft(pq)
 		gas_queue.appendleft(gq - gallons_used)
 
+# reiterating gallons_used value for return
 gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 
+# test display
 print(f'''
 	gallons at beginning of month: {gallons_start}
 	gallons at end of month: {gallons_end}
@@ -97,6 +92,13 @@ print(f'''
 	total gallons used: {gallons_used}
 	price of gas used: {price_used}
 	gas use by price per gallons: {gas_used_dict}
+	***
+	''')
+
+print(f'''
+	current price queue: {full_price_queue}
+	current gallon queue: {gas_queue}
+	please keep these lists for your records!
 	''')
 
 # 2000.00 500, 2250.00 500
@@ -104,36 +106,3 @@ print(f'''
 # gallons start - 1250
 # gallons end - 750
 # gallons used - 1000
-
-# test outline
-
-# a. current price/gal queues
-
-# b. deliveries? Y/N
-
-# c. gallons to start
-
-# d. gallons at the end
-
-# for gas and diesel
-# 1. DONE - make current price/gal queues - if delivery, add
-# 2. DONE calculate gallons used - gal_beginning - (gal_end - deliveries)
-# 3. DONE: price_used = 0
-# 4. DONE: gas_used_dict = {}
-# 5. while gallons_used:
-# 	if gallons_used >= gq1:
-# 		price_used += gq1 * pq1
-# 		gallons_used -= gq1
-# 		remove gq1
-# 		remove pq1
-# 		gas_used_dict[pq1] = gq1
-# 	else:
-# 		price_used += gallons_used * pq1
-# 		gq1 = gq1 - gallons_used
-# 		gas_used_dict[pq1] = gallons_used
-# 6. return gased_used_dict
-# 7. return price_used
-# 8. if delivery:
-# 	return delivery
-# 9. return gal_beginning, gal_end
-# 10. return gallons_used total
