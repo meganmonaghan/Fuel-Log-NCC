@@ -96,18 +96,13 @@ print(f'''
 # display queue for next month
 def queues_to_string(price_per_gallon_q, gas_q):
 	return_string = ''
-	while price_per_gallon_q.popleft():
-		return_string.append(' '.join(string(price_per_gallon_q.popleft()), string(gas_q.popleft())))
-	return return_string
-
-def queues_to_string(price_per_gallon_q, gas_q):
-	return_string = ''
 	for x in range(len(price_per_gallon_q)):
 		add_on = ' '.join([str(price_per_gallon_q.popleft()), str(gas_q.popleft())])
 		return_string = return_string + add_on + ', '
 	return return_string[:-2]
 
-print('Please keep these lists for your records!')
+print('''Please keep this list for your records! This will be
+	next month's input for inventory.''')
 print(queues_to_string(pricepg_queue, gas_queue))
 
 # 4.00 500, 4.5 500
