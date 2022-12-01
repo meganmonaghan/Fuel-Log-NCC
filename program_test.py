@@ -1,7 +1,13 @@
 import collections
+from csv_test import find_gallons_gas, find_gallons_diesel
 
 pricepg_queue = collections.deque()
 gas_queue = collections.deque()
+
+gas_type = input('''
+	Please enter the type of gas you are working
+	with (either 'gas' or 'diesel').
+''').lower()
 
 user_input = input('''
 	Please enter current inventory by price per gallon
@@ -44,11 +50,17 @@ if delivery_input.lower() == 'y':
 	gas_queue.append(delivery_gallons)
 
 # gallons start/end
-gallons_start = float(input('''
+gallons_start_m = input('''
 ***
-	Please enter the number of gallons you STARTED
-	with this month. Enter with no commas or spaces.
-'''))
+	Please enter the measurement of gas you STARTED
+	with this month in the following format:
+	14-1/2"
+''')
+
+if gas_type == 'gas':
+	gallons_start = find_gallons_gas(gallons_start_m)
+elif gas_type == 'diesel':
+	gallons_start = find_gallons_diesel(gallons_start_m)
 
 gallons_end = float(input('''
 ***
@@ -84,6 +96,8 @@ gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 
 # test display
 print(f'''
+	{gas_type} report
+
 	gallons at beginning of month: {gallons_start}
 	gallons at end of month: {gallons_end}
 	delivery gallons: {delivery_gallons}
@@ -101,8 +115,8 @@ def queues_to_string(price_per_gallon_q, gas_q):
 		return_string = return_string + add_on + ', '
 	return return_string[:-2]
 
-print('''Please keep this list for your records! This will be
-	next month's input for inventory.''')
+print(f'''Please keep this list for your records! This will be
+		next month's input for {gas_type} inventory.''')
 print(queues_to_string(pricepg_queue, gas_queue))
 
 # 4.00 500, 4.5 500
