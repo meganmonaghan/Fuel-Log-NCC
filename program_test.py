@@ -57,16 +57,19 @@ gallons_start_m = input('''
 	14-1/2"
 ''')
 
-if gas_type == 'gas':
-	gallons_start = find_gallons_gas(gallons_start_m)
-elif gas_type == 'diesel':
-	gallons_start = find_gallons_diesel(gallons_start_m)
-
-gallons_end = float(input('''
+gallons_end_m = input('''
 ***
-	Please end the number of gallons you had at the
-	END of this month. Enter with no commas or spaces.
-'''))
+	Please enter the measurement of gas you ENDED with
+	this month in the following format:
+	32-1/2"
+''')
+
+if gas_type == 'gas':
+	gallons_start = float(find_gallons_gas(gallons_start_m))
+	gallons_end = float(find_gallons_gas(gallons_end_m))
+elif gas_type == 'diesel':
+	gallons_start = float(find_gallons_diesel(gallons_start_m))
+	gallons_end = float(find_gallons_diesel(gallons_end_m))
 
 gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 price_used = 0
@@ -96,6 +99,7 @@ gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 
 # test display
 print(f'''
+***
 	{gas_type} report
 
 	gallons at beginning of month: {gallons_start}
@@ -104,7 +108,7 @@ print(f'''
 	total gallons used: {gallons_used}
 	price of gas used: {price_used}
 	gas use by price per gallons: {gas_used_dict}
-	***
+***
 	''')
 
 # display queue for next month
@@ -115,8 +119,10 @@ def queues_to_string(price_per_gallon_q, gas_q):
 		return_string = return_string + add_on + ', '
 	return return_string[:-2]
 
-print(f'''Please keep this list for your records! This will be
-		next month's input for {gas_type} inventory.''')
+print(f'''
+	Please keep this list for your records! This will be
+	next month's input for {gas_type} inventory.
+	''')
 print(queues_to_string(pricepg_queue, gas_queue))
 
 # 4.00 500, 4.5 500
