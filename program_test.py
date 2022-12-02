@@ -124,9 +124,3 @@ print(f'''
 	next month's input for {gas_type} inventory.
 	''')
 print(queues_to_string(pricepg_queue, gas_queue))
-
-# 4.00 500, 4.5 500
-# delivery - 1750.00 500
-# gallons start - 1250
-# gallons end - 750
-# gallons used - 1000
