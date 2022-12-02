@@ -83,15 +83,15 @@ while gallons_used:
 		pq = pricepg_queue.popleft()
 		price_used += gq * pq
 		gallons_used -= gq
-		gas_used_dict[pq] = gq
+		gas_used_dict['$' + str(pq)] = gq
 	# this needs to be fixed, this else block
 	else:
 		pq = pricepg_queue.popleft()
 		price_used += gallons_used * pq
 		if pq in gas_used_dict.keys():
-			gas_used_dict[pq] = gas_used_dict[pq] + gallons_used
+			gas_used_dict['$' + str(pq)] = gas_used_dict['$' + str(pq)] + gallons_used
 		else:
-			gas_used_dict[pq] = gallons_used
+			gas_used_dict['$' + str(pq)] = gallons_used
 		pricepg_queue.appendleft(pq)
 		gas_queue.appendleft(gq - gallons_used)
 		break
@@ -104,12 +104,12 @@ print(f'''
 ***
 	\033[1;3m{gas_type} report\033[0m
 
-	gallons at beginning of month: {gallons_start}
-	gallons at end of month: {gallons_end}
-	delivery gallons: {delivery_gallons}
+	gallons at beginning of month: {gallons_start} gal
+	gallons at end of month: {gallons_end} gal
+	delivery gallons: {delivery_gallons} gal
 
-	total gallons used: \033[1m{gallons_used}\033[0m
-	price of {gas_type} used: \033[1m{price_used}\033[0m
+	total gallons used: \033[1m{gallons_used}\033[0m gal
+	price of {gas_type} used: \033[1m${price_used}\033[0m
 	{gas_type} use by price per gallons: \033[1m{gas_used_dict}\033[0m
 ***
 	''')
