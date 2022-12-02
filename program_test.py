@@ -5,7 +5,7 @@ pricepg_queue = collections.deque()
 gas_queue = collections.deque()
 
 gas_type = input('''
-	Please enter the type of gas you are working
+	Please enter the type of fuel you are working
 	with (either 'gas' or 'diesel').
 ''').lower()
 
@@ -38,9 +38,9 @@ delivery_input = input('''
 delivery_gallons = 0
 if delivery_input.lower() == 'y':
 	delivery_input = input('''
-	Please enter the delivery price and amount in
-	the following format:
-	5.00 100
+	Please enter the TOTAL delivery price and amount
+	in the following format:
+	1500.00 100
 	with NO dollar signs or commas.
 ''')
 	d_components = delivery_input.split(' ')
@@ -50,18 +50,20 @@ if delivery_input.lower() == 'y':
 	gas_queue.append(delivery_gallons)
 
 # gallons start/end
-gallons_start_m = input('''
+gallons_start_m = input(f'''
 ***
-	Please enter the measurement of gas you STARTED
+	Please enter the measurement of {gas_type} you STARTED
 	with this month in the following format:
 	14-1/2"
+	Don't forget the " sign at the end of the number!
 ''')
 
-gallons_end_m = input('''
+gallons_end_m = input(f'''
 ***
-	Please enter the measurement of gas you ENDED with
+	Please enter the measurement of {gas_type} you ENDED with
 	this month in the following format:
 	32-1/2"
+	Don't forget the " sign at the end of the number!
 ''')
 
 if gas_type == 'gas':
@@ -100,14 +102,15 @@ gallons_used = float(gallons_start - (gallons_end - delivery_gallons))
 # test display
 print(f'''
 ***
-	{gas_type} report
+	\033[1;3m{gas_type} report\033[0m
 
 	gallons at beginning of month: {gallons_start}
 	gallons at end of month: {gallons_end}
 	delivery gallons: {delivery_gallons}
-	total gallons used: {gallons_used}
-	price of gas used: {price_used}
-	gas use by price per gallons: {gas_used_dict}
+
+	total gallons used: \033[1m{gallons_used}\033[0m
+	price of {gas_type} used: \033[1m{price_used}\033[0m
+	{gas_type} use by price per gallons: \033[1m{gas_used_dict}\033[0m
 ***
 	''')
 
